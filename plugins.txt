@@ -89,3 +89,4 @@ workflow-job
 jdk-tool
 font-awesome-api
 ldap
+allure-jenkins-plugin
