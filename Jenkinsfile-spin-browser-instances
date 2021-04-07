@@ -1,0 +1,68 @@
+
+	
+	
+	pipeline {
+    agent any
+    stages {
+	    stage('Git Checkout repository for spinning selenium-hub browser instances') {
+      steps {
+        sh "rm -rf *"
+        git 'https://github.com/sonups/python-selenium-hub-docker-dev.git'
+
+      }
+
+    }
+    
+           stage('Remove any old browser instances') {
+            steps {
+               
+                script{
+                    
+                     try {
+                       sh '''
+                    docker kill chrome'''
+                        } catch (err) {
+                            echo err.getMessage()
+                    }
+                     try {
+                       sh '''
+                    docker kill hub'''
+                        } catch (err) {
+                            echo err.getMessage()
+                    }
+                     try {
+                       sh '''
+                    docker rm chrome'''
+                        } catch (err) {
+                            echo err.getMessage()
+                    }
+                     try {
+                       sh '''
+                    docker rm hub'''
+                        } catch (err) {
+                            echo err.getMessage()
+                    }
+                    sh '''
+                    
+                    
+                    
+                    '''
+                }
+            }
+        }
+        
+    
+            stage('Spin up browser instances') {
+            steps {
+               
+                script{
+                    sh '''docker-compose -f docker-compose.yml up -d chrome
+                    '''
+                }
+            }
+        }
+        
+    }
+    
+	}
+        

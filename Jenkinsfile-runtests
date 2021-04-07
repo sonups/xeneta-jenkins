@@ -1,0 +1,81 @@
+pipeline {
+  agent any
+  stages {
+    stage('Git Checkout test-automation-repository') {
+      steps {
+        sh "rm -rf *"
+        git 'https://github.com/sonups/python-page-object.git'
+        sh "ls  > listJsonFiles"
+        sh "echo ${workspace}"
+      }
+
+    }
+
+              
+                            stage('Build docker image') {
+            steps {
+                  script {
+
+          sh '''docker build -t sps89/python-tests-docker . '''
+
+      }
+            }
+              }
+              
+ 
+      
+
+          stage('Clean up previously running or stopped container') {
+                    steps {
+              script {
+                  
+                        try {
+                       sh '''
+                    docker kill python-tests-docker'''
+                        } catch (err) {
+                            echo err.getMessage()
+                    }
+                    
+                                try {
+                       sh '''
+                    docker rm python-tests-docker'''
+                        } catch (err) {
+                            echo err.getMessage()
+                    }
+       
+              }
+                    }
+          }
+        
+                                                 stage('Start UI tests') {
+            steps {
+                  script {
+    
+
+          sh '''
+           
+          
+                hostname -I | awk '{print $1}'>commandResult '''
+
+                result = readFile('commandResult').trim()
+                //echo $result
+                echo "$result"
+                  echo "${result}"
+                def hub_url = "http://" + result + ":4444/wd/hub"
+                echo "hub_url - ${hub_url}"
+                sh '''export HUB_URL="$(hub_url)"
+                printenv
+                docker run --interactive --env HUB_URL=http://10.0.0.4:4444/wd/hub --name python-tests-docker sps89/python-tests-docker 
+                '''
+
+
+      }
+            }
+              }
+
+              
+              
+          }
+    
+}
+
