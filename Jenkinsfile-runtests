@@ -54,7 +54,7 @@ pipeline {
                         try {
                        sh '''
                     rm -rf target/
-                    rm -rf reports/
+                   
                     rm -rf allure-report
                     '''
                         } catch (err) {
@@ -93,34 +93,34 @@ pipeline {
             }
               }
               
-                                   stage('Copy report json to allure target folder') {
-            steps {
+        //                           stage('Copy report json to allure target folder') {
+        //     steps {
                
              
                     
-                script{
+        //         script{
                     
-                             try {
-                                  sh ''' 
+        //                      try {
+        //                           sh ''' 
                     
-                    mkdir target
+        //             mkdir target
     
-                    cd ..
-                    cp reports target/
-                    mv target/reports target/allure-results'''
-                        } catch (err) {
-                            echo err.getMessage()
-                    }
+                    
+        //             cp reports target/
+        //             mv target/reports target/allure-results'''
+        //                 } catch (err) {
+        //                     echo err.getMessage()
+        //             }
                     
         
-                }
-            }
-        }
+        //         }
+        //     }
+        // }
               
                         stage('Allure') {
             steps {
                
-                allure includeProperties: false, jdk: '', results: [[path: 'target/allure-results']]
+                allure includeProperties: false, jdk: '', results: [[path: 'reports']]
             }
         }
         
